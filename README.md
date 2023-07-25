@@ -1,5 +1,6 @@
 # stabs-stretcher
 FiveM QB-Core based stretcher script that works even when the player is dead.
+Unfortunately cannot third eye the stretcher model unless you use the one that came default with qb-radialmenu
 
 # Performance:
 ## Client
