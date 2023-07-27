@@ -13,4 +13,11 @@ client_scripts {
 
 server_script 'server/server.lua'
 
+
+files {
+    'stream/*.ydr',
+    'stream/*.ytd',
+}
+data_file 'DLC_ITYP_REQUEST' 'stream/stretcher.ytyp'
+
 -- file 'stream/prop_ld_binbag_01.ydr'

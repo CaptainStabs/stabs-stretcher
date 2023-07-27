@@ -9,4 +9,4 @@ Config.Vehicles = {
     'ambo'
 }
 
-Config.StretcherModel = 'prop_ld_binbag_01'
+Config.StretcherModel = 'stretcher'
