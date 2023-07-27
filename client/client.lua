@@ -173,9 +173,9 @@ local function LayOnStretcher(stretcherObject, playerPed)
                     TaskPlayAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 8.0, 8.0, -1, 69, 1, false, false, false)
                 end
 
-                if IsControlPressed(0, 32) then
-                    PlaceObjectOnGroundProperly(stretcherObject)
-                end
+                -- if IsControlPressed(0, 32) then
+                --     PlaceObjectOnGroundProperly(stretcherObject)
+                -- end
 
                 if IsControlJustPressed(0, 73) then
                     TriggerEvent("unsit", stretcherObject, playerPed)
