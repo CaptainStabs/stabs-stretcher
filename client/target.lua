@@ -9,7 +9,7 @@ Citizen.CreateThread(function()
                 type = "client",
                 event = "stretcher:pushstretcher",
                 label = "Push Stretcher",
-                -- job = 'ambulance'
+                job = 'ambulance'
             },
             {
                 num = 2,
@@ -28,14 +28,14 @@ Citizen.CreateThread(function()
                 type = "command",
                 event = "spawnstr",
                 label = "Get new stretcher from vehicle",
-                -- job = 'ambulance'
+                job = 'ambulance'
             },
             {
                 num = 2,
                 type = "client",
                 event = "stretcher:togglestrincar",
                 label = "Put/Remove stretcher in/from car",
-                -- job = 'ambulance'
+                job = 'ambulance'
             },
         },
         distance = 2.5,
