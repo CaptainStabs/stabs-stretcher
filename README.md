@@ -3,11 +3,11 @@ FiveM QB-Core based stretcher script that works even when the player is dead.
 
 # Performance:
 ## Client
-- 0.0 ms idle
-- 0.02 in use
+- 0.0ms idle
+- 0.02ms in use
 ## Server
 - ~1ms while player is transitioning between last stand and dead
-- 0 ms idle
+- 0ms idle
 
 # Requirements
 - [qb-core](https://github.com/qbcore-framework/qb-core)
