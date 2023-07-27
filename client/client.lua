@@ -166,16 +166,15 @@ local function LayOnStretcher(stretcherObject, playerPed)
         -- This needs to be repeated in order to detect when the player has
         -- transistioned from inLaststand to isDead
         repeat
-            Citizen.Wait(0)
-
+            -- Citizen.Wait(0)
             QBCore.Functions.TriggerCallback('stretcher:server:GetPlayerStatus', function(inLaststand, isDead)
                 if not isDead and not IsEntityPlayingAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 3) then
                     TaskPlayAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 8.0, 8.0, -1, 69, 1, false, false, false)
                 end
 
-                -- if IsControlPressed(0, 32) then
-                --     PlaceObjectOnGroundProperly(stretcherObject)
-                -- end
+                if IsControlPressed(0, 32) then
+                    PlaceObjectOnGroundProperly(stretcherObject)
+                end
 
                 if IsControlJustPressed(0, 73) then
                     TriggerEvent("unsit", stretcherObject, playerPed)
@@ -193,6 +192,7 @@ local function LayOnStretcher(stretcherObject, playerPed)
             end, playerId)
 
             Citizen.Wait(0)
+
         until playerNotDead or playerDied or not stillSitting
 
         if playerNotDead or playerDied then
