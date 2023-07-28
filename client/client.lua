@@ -50,7 +50,7 @@ local function PickUpStretcher(stretcherObject)
 
     LoadAnimDict(dict)
 
-    NetworkRequestControlOfEntity(strObject)
+    NetworkRequestControlOfEntity(stretcherObject)
     AttachEntityToEntity(stretcherObject, playerPed, GetPedBoneIndex(playerPed, 28422), 0.0, -0.6, -1.43, 180.0, 164.0, 90.0, 0.0, false, false, true, false, 2, true)
 
     while IsEntityAttachedToEntity(stretcherObject, playerPed) do
@@ -70,6 +70,7 @@ local function PickUpStretcher(stretcherObject)
             EnableControlAction(1, 140, true)  -- Re-enable punching
             EnableControlAction(1, 141, true)
             EnableControlAction(1, 142, true)
+            PlaceObjectOnGroundProperly(stretcherObject)
         end
     end
 end
@@ -117,7 +118,6 @@ local function StretcherToCar(stretcherObject, vehicle)
 
     if GetVehiclePedIsIn(playerPed, false) == 0 and DoesEntityExist(vehicle) and IsEntityAVehicle(vehicle) then
         AttachEntityToEntity(stretcherObject, vehicle, 0.0, 0.0, -2.0, 0.0, 0.0, 0.0, 90.0, false, false, true, false, 2, true)
-        FreezeEntityPosition(stretcherObject, true)
     else
         print("Car does not exist.")
     end
@@ -128,7 +128,6 @@ local function StretcherOutCar(stretcherObject)
 
     if DoesEntityExist(stretcherObject) then
         DetachEntity(stretcherObject, true, true)
-        FreezeEntityPosition(stretcherObject, false)
         SetEntityCoords(stretcherObject, GetEntityCoords(playerPed))
         PlaceObjectOnGroundProperly(stretcherObject)
         TriggerEvent('stretcher:pushstretcher')
