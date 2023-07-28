@@ -117,7 +117,7 @@ local function StretcherToCar(stretcherObject, vehicle)
     local playerPed = PlayerPedId()
 
     if GetVehiclePedIsIn(playerPed, false) == 0 and DoesEntityExist(vehicle) and IsEntityAVehicle(vehicle) then
-        AttachEntityToEntity(stretcherObject, vehicle, 0.0, 0.0, -2.0, 0.0, 0.0, 0.0, 90.0, false, false, true, false, 2, true)
+        AttachEntityToEntity(stretcherObject, vehicle, 0.0, 0.5, -2.0, 0.0, 0.0, 0.0, 90.0, false, false, true, false, 2, true)
     else
         print("Car does not exist.")
     end
