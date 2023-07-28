@@ -1,17 +1,13 @@
 # stabs-stretcher
 FiveM QB-Core based stretcher script that works even when the player is dead.
-Unfortunately cannot third eye the stretcher model unless you use the one that came default with qb-radialmenu
 
 # Performance:
 ## Client
-- 0.0 ms idle
-- 0.02 in use
+- 0.0ms idle
+- 0.02ms in use
 ## Server
-- 0.02 while player is transitioning between last stand and dead
-- 0 ms idle
-
-# Installation
-Put the folder `prop_Id_binbag_01` wherever you put your streamed assets. Feel free to rename it, just make sure you update the model's name in the config (must be a REPLACE prop)
+- ~1ms while player is transitioning between last stand and dead
+- 0ms idle
 
 # Requirements
 - [qb-core](https://github.com/qbcore-framework/qb-core)
