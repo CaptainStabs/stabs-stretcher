@@ -34,7 +34,7 @@ Citizen.CreateThread(function()
                 num = 2,
                 type = "client",
                 event = "stretcher:togglestrincar",
-                label = "Put/Remove stretcher in/from car",
+                label = "Put/Remove stretcher in/from vehicle",
                 job = 'ambulance'
             },
         },
