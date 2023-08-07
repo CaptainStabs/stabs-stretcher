@@ -20,4 +20,8 @@ files {
 }
 data_file 'DLC_ITYP_REQUEST' 'stream/stretcher.ytyp'
 
--- file 'stream/prop_ld_binbag_01.ydr'
+dependencies {
+    'qb-core',
+    'qb-ambulancejob',
+    'qb-target'
+}
