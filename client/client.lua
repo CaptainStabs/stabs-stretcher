@@ -65,6 +65,17 @@ local function PickUpStretcher(stretcherObject)
 
         if IsPedDeadOrDying(playerPed) or IsControlJustPressed(0, 73) then
             DetachEntity(stretcherObject, true, true)
+            
+            
+            local playerPed = PlayerPedId()
+            local playerCoords = GetEntityCoords(playerPed)
+            local forwardVector = GetEntityForwardVector(playerPed)
+
+            local distance = 1.3 -- Adjust the distance as needed
+
+            local targetCoords = playerCoords + forwardVector * distance
+            SetEntityCoordsNoOffset(stretcherObject, targetCoords.x, targetCoords.y, targetCoords.z, true, true, true)
+
             ClearPedTasks(playerPed)
             StopAnimTask(playerPed, dict, 'idle', 1.0)
             EnableControlAction(1, 140, true)  -- Re-enable punching
@@ -137,37 +148,43 @@ local function StretcherOutCar(stretcherObject)
     end
 end
 
-local function LayOnStretcher(stretcherObject, playerPed)
-    -- if playerPed == nil then -- if called by another person
-    --     local playerPed = PlayerPedId()
-    -- end
-    local closestPlayer, closestPlayerDist = GetClosestPlayer()
+local function LayOnStretcher(stretcherObject)
 
+    local stretcherObject =  NetworkGetEntityFromNetworkId(stretcherObject)
+    -- Used only to check if someone is already using the stretcher
+    local closestPlayer, closestPlayerDist = GetClosestPlayer()
+    
     if closestPlayer ~= nil and closestPlayerDist <= 1.5 then
         if IsEntityPlayingAnim(GetPlayerPed(closestPlayer), 'anim@gangops@morgue@table@', 'ko_front', 3) then
             ShowNotification("Somebody is already using the stretcher!")
             return
         end
     end
-
+    
     LoadAnimDict('anim@gangops@morgue@table@')
-
+    
+    local playerPed = PlayerPedId()
+    local playerServerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(playerPed))
+    
     isEscorted = true
     TriggerEvent('hospital:client:isEscorted', isEscorted)
     DetachEntity(playerPed, true, true)
     AttachEntityToEntity(playerPed, stretcherObject, 0, -0.09, 0.02, 1.9, 0.0, 0.0, 266.0, 0.0, false, false, false, false, 2, true)
 
-    local playerServerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(playerPed))
     local stillSitting = true
     local playerDied = false
     local playerNotDead = false
 
+
+    print('playerPed', playerPed)
+    print('serverid', playerServerId)
     Citizen.CreateThread(function()
         -- This needs to be repeated in order to detect when the player has
         -- transistioned from inLaststand to isDead
         repeat
             Citizen.Wait(0)
             QBCore.Functions.TriggerCallback('stretcher:server:GetPlayerStatus', function(inLaststand, isDead)
+                -- Overwriting the qb-ambulancejob dead animation causes player to detach
                 if not isDead and not IsEntityPlayingAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 3) then
                     TaskPlayAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 8.0, 8.0, -1, 69, 1, false, false, false)
                 end
@@ -176,7 +193,8 @@ local function LayOnStretcher(stretcherObject, playerPed)
                     PlaceObjectOnGroundProperly(stretcherObject)
                 end
 
-                if IsControlJustPressed(0, 73) then
+                -- if X is pressed
+                if IsControlJustPressed(0, 73) then 
                     TriggerEvent("unsit", stretcherObject, playerPed)
                     stillSitting = false
                 end
@@ -186,6 +204,7 @@ local function LayOnStretcher(stretcherObject, playerPed)
                     return
                 end
 
+                -- Immediately leave the expensive server callback after one attempt if the player is neither dead nor dying
                 if not isDead and not inLaststand then
                     playerNotDead = true
                 end
@@ -204,7 +223,7 @@ local function LayOnStretcher(stretcherObject, playerPed)
             stillSitting = true
 
             while stillSitting do
-                Citizen.Wait(5)
+                Citizen.Wait(0)
 
                 if not IsEntityAttachedToEntity(playerPed, stretcherObject) then
                     AttachEntityToEntity(playerPed, stretcherObject, 0, -0.09, 0.02, 1.9, 0.0, 0.0, 266.0, 0.0, false, false, false, false, 2, true)
@@ -285,28 +304,23 @@ RegisterNetEvent("stretcher:getonstretcher")
 AddEventHandler("stretcher:getonstretcher", function()
     local playerPed = PlayerPedId()
     local pedCoords = GetEntityCoords(playerPed)
-    local closestObject = GetClosestObjectOfType(pedCoords, 3.0, GetHashKey(Config.StretcherModel), false)
+    local stretcher = GetClosestObjectOfType(pedCoords, 3.0, GetHashKey(Config.StretcherModel), false)
 
-    if DoesEntityExist(closestObject) then
-        local strCoords = GetEntityCoords(closestObject)
-        local strVecForward = GetEntityForwardVector(closestObject)
+    if DoesEntityExist(stretcher) then
+        local strCoords = GetEntityCoords(stretcher)
+        local strVecForward = GetEntityForwardVector(stretcher)
         local sitCoords = strCoords + strVecForward * -0.5
         local pickupCoords = strCoords + strVecForward * 0.3
 
         if GetDistanceBetweenCoords(pedCoords, sitCoords, true) <= 2.0 then
-            LayOnStretcher(closestObject, playerPed)
+            local playerServerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(playerPed))
+            LayOnStretcher(NetworkGetNetworkIdFromEntity(stretcher))
         end
     end
 end)
 
--- called from server on specified client
-RegisterNetEvent('stretcher:client:GetPlacedOnStretcher')
-AddEventHandler('stretcher:client:GetPlacedOnStretcher', function(targetPlayer, stretcher)
-    print('get placed on stretcher', targetPlayer)
-    LayOnStretcher(stretcher, targetPlayer)
-end)
 
--- This is an attempt to allow another player to trigger the clientside events
+-- Place another player on the stretcher
 RegisterNetEvent('stretcher:client:PlaceOnStretcher')
 AddEventHandler('stretcher:client:PlaceOnStretcher', function()
     local playerId, distance = GetClosestPlayer()
@@ -315,10 +329,17 @@ AddEventHandler('stretcher:client:PlaceOnStretcher', function()
     if playerPed ~= -1 and distance < 5 then
         local stretcher = GetClosestObjectOfType(pedCoords, 3.0, GetHashKey(Config.StretcherModel), false)
         if DoesEntityExist(stretcher) then
-            playerServerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(playerPed))
-            TriggerServerEvent('stretcher:server:PlaceOnStretcher', playerServerId, playerPed, closestObject)
+            local playerServerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(playerPed))
+            TriggerServerEvent('stretcher:server:PlaceOnStretcher', playerServerId, NetworkGetNetworkIdFromEntity(stretcher))
         end
     end
+end)
+
+-- called from server on specified client
+RegisterNetEvent('stretcher:client:GetPlacedOnStretcher')
+AddEventHandler('stretcher:client:GetPlacedOnStretcher', function(stretcher, playerServerId)
+    print('get placed on stretcher', playerServerId)
+    LayOnStretcher(stretcher)
 end)
 
 RegisterNetEvent("stretcher:togglestrincar")
