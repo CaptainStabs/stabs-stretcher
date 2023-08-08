@@ -16,5 +16,5 @@ Config.VehiclesPos = {
     ['HEMS1'] = {x = -0.3, y = -1.5, z = -0.8}
 }
 
-Config.StretcherModel = 'prop_ld_binbag_01'
+Config.StretcherModel = 'stretcher'
 Config.BackBoard = 'combicarrier2'
