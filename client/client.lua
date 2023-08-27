@@ -51,7 +51,7 @@ local function PickUpStretcher(stretcherObject)
     LoadAnimDict(dict)
 
     NetworkRequestControlOfEntity(stretcherObject)
-    AttachEntityToEntity(stretcherObject, playerPed, GetPedBoneIndex(playerPed, 28422), 0.0, -0.6, -1.43, 180.0, 164.0, 90.0, 0.0, false, false, true, false, 2, true)
+    AttachEntityToEntity(stretcherObject, playerPed, GetPedBoneIndex(playerPed, 28422), Config.PushPos.x, Config.PushPos.y, Config.PushPos.z, Config.PushPos.xRot, Config.PushPos.yRot, Config.PushPos.zRot, 0.0, false, false, true, false, 2, true)
 
     while IsEntityAttachedToEntity(stretcherObject, playerPed) do
         Citizen.Wait(0)
