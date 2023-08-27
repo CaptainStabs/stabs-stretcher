@@ -169,15 +169,12 @@ local function LayOnStretcher(stretcherObject)
     isEscorted = true
     TriggerEvent('hospital:client:isEscorted', isEscorted)
     DetachEntity(playerPed, true, true)
-    AttachEntityToEntity(playerPed, stretcherObject, 0, -0.09, 0.02, 1.9, 0.0, 0.0, 266.0, 0.0, false, false, false, false, 2, true)
+    AttachEntityToEntity(playerPed, stretcherObject, 0, Config.LayPos.x, Config.LayPos.y, Config.LayPos.z, Config.LayPos.xRot, Config.LayPos.yRot, Config.LayPos.zRot, 0.0, false, false, false, false, 2, true)
 
     local stillSitting = true
     local playerDied = false
     local playerNotDead = false
 
-
-    print('playerPed', playerPed)
-    print('serverid', playerServerId)
     Citizen.CreateThread(function()
         -- This needs to be repeated in order to detect when the player has
         -- transistioned from inLaststand to isDead
@@ -187,10 +184,6 @@ local function LayOnStretcher(stretcherObject)
                 -- Overwriting the qb-ambulancejob dead animation causes player to detach
                 if not isDead and not IsEntityPlayingAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 3) then
                     TaskPlayAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 8.0, 8.0, -1, 69, 1, false, false, false)
-                end
-
-                if IsControlPressed(0, 32) then
-                    PlaceObjectOnGroundProperly(stretcherObject)
                 end
 
                 -- if X is pressed
@@ -210,26 +203,22 @@ local function LayOnStretcher(stretcherObject)
                 end
             end, playerServerId)
 
-            -- Citizen.Wait(0)
-
         until playerNotDead or playerDied or not stillSitting
 
         if playerNotDead or playerDied then
+            -- Cannot play the animation while the player is dead
             if not isDead and not IsEntityPlayingAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 3) then
                 TaskPlayAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 8.0, 8.0, -1, 69, 1, false, false, false)
             end
 
-            AttachEntityToEntity(playerPed, stretcherObject, 0, -0.09, 0.02, 1.9, 0.0, 0.0, 266.0, 0.0, false, false, false, false, 2, true)
+            AttachEntityToEntity(playerPed, stretcherObject, 0, Config.LayPos.x, Config.LayPos.y, Config.LayPos.z, Config.LayPos.xRot, Config.LayPos.yRot, Config.LayPos.zRot, 0.0, false, false, false, false, 2, true)
             stillSitting = true
 
             while stillSitting do
                 Citizen.Wait(0)
 
                 if not IsEntityAttachedToEntity(playerPed, stretcherObject) then
-                    AttachEntityToEntity(playerPed, stretcherObject, 0, -0.09, 0.02, 1.9, 0.0, 0.0, 266.0, 0.0, false, false, false, false, 2, true)
-                    -- TriggerEvent('unsit', stretcherObject)
-                    -- stillSitting = false
-                    print("No longer attached.")
+                    AttachEntityToEntity(playerPed, stretcherObject, 0, Config.LayPos.x, Config.LayPos.y, Config.LayPos.z, Config.LayPos.xRot, Config.LayPos.yRot, Config.LayPos.zRot, 0.0, false, false, false, false, 2, true)
                 end
 
                 if IsControlPressed(0, 32) then
@@ -338,7 +327,6 @@ end)
 -- called from server on specified client
 RegisterNetEvent('stretcher:client:GetPlacedOnStretcher')
 AddEventHandler('stretcher:client:GetPlacedOnStretcher', function(stretcher, playerServerId)
-    print('get placed on stretcher', playerServerId)
     LayOnStretcher(stretcher)
 end)
 
@@ -373,16 +361,6 @@ AddEventHandler('unsit', function(stretcherObject, playerPed)
     local x, y, z = table.unpack(GetEntityCoords(stretcherObject) + GetEntityForwardVector(stretcherObject) * -0.7)
     SetEntityCoords(playerPed, x, y, z)
 end)
-
--- RegisterCommand("test", function()
---     local playerPed = PlayerPedId()
---     local playerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(playerPed))
-
---     QBCore.Functions.TriggerCallback('stretcher:server:GetPlayerStatus', function(inLaststand, isDead)
---         print("inlaststand in loop", isDead, inLaststand)
---     end, playerId)
--- end)
-
 
 function VehicleInFront()
     local playerPed = PlayerPedId()

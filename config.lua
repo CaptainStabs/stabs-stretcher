@@ -16,5 +16,15 @@ Config.VehiclesPos = {
     ['HEMS1'] = {x = -0.3, y = -1.5, z = -0.8}
 }
 
+-- Positioning of player on stretcher
+Config.LayPos = {
+    x = -0.09, 
+    y = 0.02, 
+    z = 1.9, 
+    xRot = 0.0, 
+    yRot = 0.0, 
+    zRot = 266.0
+}
+
 Config.StretcherModel = 'stretcher'
-Config.BackBoard = 'combicarrier2'
+-- Config.BackBoard = 'combicarrier2'
