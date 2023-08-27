@@ -26,7 +26,6 @@ Config.LayPos = {
     zRot = 266.0
 }
 
-AttachEntityToEntity(stretcherObject, playerPed, GetPedBoneIndex(playerPed, 28422), Config.PushPos.x, Config.PushPos.y, Config.PushPos.z, Config.PushPos.xRot, Config.PushPos.yRot, Config.PushPos.zRot, 0.0, false, false, true, false, 2, true)
 Config.PushPos = {
     x = 0.0,
     y = -0.6,
