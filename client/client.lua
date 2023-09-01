@@ -343,3 +343,31 @@ function VehicleInFront()
     local _, _, _, _, result = GetRaycastResult(rayHandle)
     return result
 end
+
+RegisterCommand(config.PushCommand, function()
+    TriggerEvent('stretcher:pushstretcher')
+end)
+
+RegisterCommand(config.LayCommand, function()
+    TriggerEvent('stretcher:GetOnStretcher')
+end)
+
+RegisterCommand(Config.SpawnCommand, function()
+    if QBCore.Functions.GetPlayerData().job.name == Config.Job then
+        if stretcher == nil then
+            PlaceStretcher()
+        else
+            print("The stretcher is already placed.")
+        end
+    else
+        TriggerEvent("QBCore:Notify", "You must be NHS to do this!", "error")
+    end
+end, false)
+
+RegisterCommand(Config.RemoveCommand, function()
+    if QBCore.Functions.GetPlayerData().job.name == Config.Job then
+        RemoveStretcher()
+    else
+        TriggerEvent("QBCore:Notify", "You must be NHS to do this!", "error")
+    end
+end, false)

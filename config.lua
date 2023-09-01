@@ -5,6 +5,15 @@ Config.StretcherAnimationDict = 'anim@gangops@morgue@table@'
 -- Animation that should be played when lying on stretcher
 Config.StretcherAnimation = 'ko_front'
 
+-- Commands
+Config.PushCommand = "push"
+Config.LayCommand = "lay"
+Config.SpawnCommand = "spawnstr"
+Config.RemoveCommand = "removestr"
+
+-- Job that is allowed to use create and remove the stretchers
+Config.Job = 'ambulance'
+
 -- Add vehicles that should have stretchers in them
 Config.Vehicles = {
     'ambulance',
