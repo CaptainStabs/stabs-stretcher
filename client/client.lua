@@ -155,13 +155,13 @@ local function LayOnStretcher(stretcherObject)
     local closestPlayer, closestPlayerDist = GetClosestPlayer()
     
     if closestPlayer ~= nil and closestPlayerDist <= 1.5 then
-        if IsEntityPlayingAnim(GetPlayerPed(closestPlayer), 'anim@gangops@morgue@table@', 'ko_front', 3) then
+        if IsEntityPlayingAnim(GetPlayerPed(closestPlayer), Config.StretcherAnimationDict, Config.StretcherAnimation, 3) then
             ShowNotification("Somebody is already using the stretcher!")
             return
         end
     end
     
-    LoadAnimDict('anim@gangops@morgue@table@')
+    LoadAnimDict(Config.StretcherAnimationDict)
     
     local playerPed = PlayerPedId()
     local playerServerId = GetPlayerServerId(NetworkGetPlayerIndexFromPed(playerPed))
@@ -182,13 +182,13 @@ local function LayOnStretcher(stretcherObject)
             Citizen.Wait(0)
             QBCore.Functions.TriggerCallback('stretcher:server:GetPlayerStatus', function(inLaststand, isDead)
                 -- Overwriting the qb-ambulancejob dead animation causes player to detach
-                if not isDead and not IsEntityPlayingAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 3) then
-                    TaskPlayAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 8.0, 8.0, -1, 69, 1, false, false, false)
+                if not isDead and not IsEntityPlayingAnim(playerPed, Config.StretcherAnimationDict, Config.StretcherAnimation, 3) then
+                    TaskPlayAnim(playerPed, Config.StretcherAnimationDict, Config.StretcherAnimation, 8.0, 8.0, -1, 69, 1, false, false, false)
                 end
 
                 -- if X is pressed
                 if IsControlJustPressed(0, 73) then 
-                    TriggerEvent("unsit", stretcherObject, playerPed)
+                    TriggerEvent("stretcher:unsit", stretcherObject, playerPed)
                     stillSitting = false
                 end
 
@@ -207,8 +207,8 @@ local function LayOnStretcher(stretcherObject)
 
         if playerNotDead or playerDied then
             -- Cannot play the animation while the player is dead
-            if not isDead and not IsEntityPlayingAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 3) then
-                TaskPlayAnim(playerPed, 'anim@gangops@morgue@table@', 'ko_front', 8.0, 8.0, -1, 69, 1, false, false, false)
+            if not isDead and not IsEntityPlayingAnim(playerPed, Config.StretcherAnimationDict, Config.StretcherAnimation, 3) then
+                TaskPlayAnim(playerPed, Config.StretcherAnimationDict, Config.StretcherAnimation, 8.0, 8.0, -1, 69, 1, false, false, false)
             end
 
             AttachEntityToEntity(playerPed, stretcherObject, 0, Config.LayPos.x, Config.LayPos.y, Config.LayPos.z, Config.LayPos.xRot, Config.LayPos.yRot, Config.LayPos.zRot, 0.0, false, false, false, false, 2, true)
@@ -226,7 +226,7 @@ local function LayOnStretcher(stretcherObject)
                 end
 
                 if IsControlJustPressed(0, 73) then
-                    TriggerEvent("unsit", stretcherObject, playerPed)
+                    TriggerEvent("stretcher:unsit", stretcherObject, playerPed)
                     stillSitting = false
                 end
             end
@@ -261,36 +261,9 @@ AddEventHandler("stretcher:pushstretcher", function()
     end 
 end)
 
-RegisterCommand("push", function()
-    TriggerEvent('stretcher:pushstretcher')
-end)
 
-RegisterCommand("lay", function()
-    TriggerEvent('stretcher:getonstretcher')
-end)
-
-RegisterCommand("spawnstr", function()
-    if QBCore.Functions.GetPlayerData().job.name == 'ambulance' then
-        if stretcher == nil then
-            PlaceStretcher()
-        else
-            print("The stretcher is already placed.")
-        end
-    else
-        TriggerEvent("QBCore:Notify", "You must be NHS to do this!", "error")
-    end
-end, false)
-
-RegisterCommand("removestr", function()
-    if QBCore.Functions.GetPlayerData().job.name == 'ambulance' then
-        RemoveStretcher()
-    else
-        TriggerEvent("QBCore:Notify", "You must be NHS to do this!", "error")
-    end
-end, false)
-
-RegisterNetEvent("stretcher:getonstretcher")
-AddEventHandler("stretcher:getonstretcher", function()
+RegisterNetEvent("stretcher:GetOnStretcher")
+AddEventHandler("stretcher:GetOnStretcher", function()
     local playerPed = PlayerPedId()
     local pedCoords = GetEntityCoords(playerPed)
     local stretcher = GetClosestObjectOfType(pedCoords, 3.0, GetHashKey(Config.StretcherModel), false)
@@ -330,8 +303,8 @@ AddEventHandler('stretcher:client:GetPlacedOnStretcher', function(stretcher, pla
     LayOnStretcher(stretcher)
 end)
 
-RegisterNetEvent("stretcher:togglestrincar")
-AddEventHandler("stretcher:togglestrincar", function()
+RegisterNetEvent("stretcher:ToggleStrInCar")
+AddEventHandler("stretcher:ToggleStrInCar", function()
     local veh = VehicleInFront()
     local playerPed = PlayerPedId()
     local pedCoords = GetEntityCoords(playerPed)
@@ -347,8 +320,8 @@ AddEventHandler("stretcher:togglestrincar", function()
     StopAnimTask(playerPed, "anim@heists@box_carry@", 'idle', 1.0)
 end)
 
-RegisterNetEvent('unsit')
-AddEventHandler('unsit', function(stretcherObject, playerPed)
+RegisterNetEvent('stretcher:unsit')
+AddEventHandler('stretcher:unsit', function(stretcherObject, playerPed)
     if playerPed == nil then
         playerPed = PlayerPedId()
     end

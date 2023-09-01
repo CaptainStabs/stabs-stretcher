@@ -1,5 +1,10 @@
 Config = {}
 
+-- Animation Dictionary that should be used when lying on stretcher
+Config.StretcherAnimationDict = 'anim@gangops@morgue@table@'
+-- Animation that should be played when lying on stretcher
+Config.StretcherAnimation = 'ko_front'
+
 -- Add vehicles that should have stretchers in them
 Config.Vehicles = {
     'ambulance',
