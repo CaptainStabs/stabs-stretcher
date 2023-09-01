@@ -344,11 +344,11 @@ function VehicleInFront()
     return result
 end
 
-RegisterCommand(config.PushCommand, function()
+RegisterCommand(Config.PushCommand, function()
     TriggerEvent('stretcher:pushstretcher')
 end)
 
-RegisterCommand(config.LayCommand, function()
+RegisterCommand(Config.LayCommand, function()
     TriggerEvent('stretcher:GetOnStretcher')
 end)
 
