@@ -44,9 +44,9 @@ Config.PushPos = {
     x = 0.0,
     y = -0.6,
     z = -1.43,
-    xRot = 180,
+    xRot = 180.0,
     yRot = 164.0,
-    zRot = 90
+    zRot = 90.0
 }
 
 Config.StretcherModel = 'stretcher'
