@@ -95,7 +95,7 @@ local function PlaceStretcher()
     SetEntityHeading(stretcher, heading)
     PlaceObjectOnGroundProperly(stretcher)
     
-    TriggerEvent('stretcher:pushstretcher')
+    TriggerEvent('stretcher:PushStretcher')
     print("Stretcher placed.")
 end
 
@@ -142,7 +142,7 @@ local function StretcherOutCar(stretcherObject)
         DetachEntity(stretcherObject, true, true)
         SetEntityCoords(stretcherObject, GetEntityCoords(playerPed))
         PlaceObjectOnGroundProperly(stretcherObject)
-        TriggerEvent('stretcher:pushstretcher')
+        TriggerEvent('stretcher:PushStretcher')
     else
         print("Stretcher does not exist.")
     end
@@ -243,8 +243,8 @@ local function UnsitFromStretcher(stretcherObject, playerPed)
     SetEntityCoords(playerPed, table.unpack(GetEntityCoords(stretcherObject) + GetEntityForwardVector(stretcherObject) * -0.7))
 end
 
-RegisterNetEvent("stretcher:pushstretcher")
-AddEventHandler("stretcher:pushstretcher", function()
+RegisterNetEvent("stretcher:PushStretcher")
+AddEventHandler("stretcher:PushStretcher", function()
     local playerPed = PlayerPedId()
     local pedCoords = GetEntityCoords(playerPed)
     local closestObject = GetClosestObjectOfType(pedCoords, 3.0, GetHashKey(Config.StretcherModel), false)
@@ -345,7 +345,7 @@ function VehicleInFront()
 end
 
 RegisterCommand(Config.PushCommand, function()
-    TriggerEvent('stretcher:pushstretcher')
+    TriggerEvent('stretcher:PushStretcher')
 end)
 
 RegisterCommand(Config.LayCommand, function()
@@ -354,20 +354,22 @@ end)
 
 RegisterCommand(Config.SpawnCommand, function()
     if QBCore.Functions.GetPlayerData().job.name == Config.Job then
+    -- if true then
         if stretcher == nil then
             PlaceStretcher()
         else
             print("The stretcher is already placed.")
         end
     else
-        TriggerEvent("QBCore:Notify", "You must be NHS to do this!", "error")
+        TriggerEvent("QBCore:Notify", Config.JobMessage, "error")
     end
 end, false)
 
 RegisterCommand(Config.RemoveCommand, function()
     if QBCore.Functions.GetPlayerData().job.name == Config.Job then
+    -- if true then
         RemoveStretcher()
     else
-        TriggerEvent("QBCore:Notify", "You must be NHS to do this!", "error")
+        TriggerEvent("QBCore:Notify", Config.JobMessage, "error")
     end
 end, false)

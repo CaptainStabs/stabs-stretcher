@@ -12,3 +12,10 @@ AddEventHandler("stretcher:server:PlaceOnStretcher", function(playerServerId, st
     print('placeonstretcher', playerServerId)
     TriggerClientEvent('stretcher:client:GetPlacedOnStretcher', playerServerId, stretcher)
 end)
+
+
+RegisterServerEvent("stretcher:server:RemoveFromStretcher")
+AddEventHandler("stretcher:server:RemoveFromStretcher", function(playerServerId, stretcher)
+    print('RemoveFromStretcher', playerServerId)
+    TriggerClientEvent('stretcher:client:GetRemovedFromStretcher', playerServerId, stretcher)
+end)

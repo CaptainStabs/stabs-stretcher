@@ -11,6 +11,9 @@ Config.LayCommand = "lay"
 Config.SpawnCommand = "spawnstr"
 Config.RemoveCommand = "removestr"
 
+
+-- Notification messages
+Config.JobMessage = "You must be NHS to do this!"
 -- Job that is allowed to use create and remove the stretchers
 Config.Job = 'ambulance'
 
@@ -30,6 +33,7 @@ Config.VehiclesPos = {
     ['HEMS1'] = {x = -0.3, y = -1.5, z = -0.8}
 }
 
+-- These will need to be changed if you change the model
 -- Positioning of player on stretcher
 Config.LayPos = {
     x = -0.09, 
